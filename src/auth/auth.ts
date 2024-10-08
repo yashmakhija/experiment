@@ -8,8 +8,7 @@ const signupSchema = z.object({
 });
 
 const siginSchema = z.object({
-  username: z.string().min(4, "Username must be at least 4 character"),
-  email: z.string().email("Invalid Email format"),
+  usernameOrEmail: z.string().min(1, "Username or Email is required"),
   password: z.string().min(8, "Password must at least 8 character"),
 });
 

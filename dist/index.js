@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
         console.log("error: ", err);
     }
 });
-app.use("/api/v1/users", users_1.default);
+app.use("/api/v1/user", users_1.default);
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on Port: http://localhost:3000`);
