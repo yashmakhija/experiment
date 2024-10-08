@@ -12,4 +12,9 @@ const siginSchema = z.object({
   password: z.string().min(8, "Password must at least 8 character"),
 });
 
-export { siginSchema, signupSchema };
+const doubtSchema = z.object({
+  title: z.string().min(4),
+  description: z.string().min(5),
+});
+
+export { siginSchema, signupSchema, doubtSchema };
