@@ -7,10 +7,10 @@ import bcrypt from "bcrypt";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 dotenv.config();
-const router = express.Router();
+const userRouter = express.Router();
 const prisma = new PrismaClient();
 
-router.post("/signup", async (req: any, res: any) => {
+userRouter.post("/signup", async (req: any, res: any) => {
   const validate = signupSchema.safeParse(req.body);
   if (!validate.success) {
     return res.status(400).json({
@@ -66,7 +66,7 @@ router.post("/signup", async (req: any, res: any) => {
   }
 });
 
-router.post("/signin", async (req: any, res: any) => {
+userRouter.post("/signin", async (req: any, res: any) => {
   const validateSchema = siginSchema.safeParse(req.body);
   if (!validateSchema.success) {
     return res.status(400).json({
@@ -117,4 +117,4 @@ router.post("/signin", async (req: any, res: any) => {
   }
 });
 
-export default router;
+export default userRouter;
