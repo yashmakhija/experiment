@@ -47,7 +47,7 @@ router.post("/signup", async (req: any, res: any) => {
 
     return res.status(201).json({
       msg: "User created successfully",
-      token: token,
+      token: "Bearer " + token,
     });
   } catch (err) {
     if (err instanceof PrismaClientKnownRequestError) {
@@ -107,7 +107,7 @@ router.post("/signin", async (req: any, res: any) => {
 
     return res.status(200).json({
       msg: "Sign-in successful",
-      token: token,
+      token: "Bearer " + token,
     });
   } catch (err) {
     console.error(err);

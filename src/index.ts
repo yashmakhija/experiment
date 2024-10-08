@@ -1,5 +1,6 @@
 import express from "express";
 import userRoutes from "./routes/users";
+import { authenticationToken } from "./middleware/authMiddleware";
 
 const app = express();
 
@@ -19,6 +20,11 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/user", userRoutes);
+
+app.get("/protected", authenticationToken, (req, res) => {
+  // Fixed syntax here
+  res.json({ msg: "Hello from protected route" });
+});
 
 const PORT = 3000;
 app.listen(PORT, () => {

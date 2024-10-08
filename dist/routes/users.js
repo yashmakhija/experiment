@@ -50,7 +50,7 @@ router.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function*
         }, tokenSecret);
         return res.status(201).json({
             msg: "User created successfully",
-            token: token,
+            token: "Bearer " + token,
         });
     }
     catch (err) {
@@ -99,7 +99,7 @@ router.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function*
         }, tokenSecret);
         return res.status(200).json({
             msg: "Sign-in successful",
-            token: token,
+            token: "Bearer " + token,
         });
     }
     catch (err) {
