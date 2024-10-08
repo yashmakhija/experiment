@@ -41,6 +41,7 @@ userRouter.post("/signup", async (req: any, res: any) => {
       {
         id: user.id,
         email: user.email,
+        username: user.username,
       },
       tokenSecret
     );
@@ -101,6 +102,7 @@ userRouter.post("/signin", async (req: any, res: any) => {
       {
         id: user.id,
         email: user.email,
+        username: user.username,
       },
       tokenSecret
     );
