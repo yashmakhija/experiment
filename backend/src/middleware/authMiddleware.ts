@@ -22,7 +22,8 @@ export const authenticationToken = (
 
   jwt.verify(token, process.env.SECRET as string, (err, user) => {
     if (err) {
-      return res.status(403).json({ msg: "Forbidden" });
+      res.status(403).json({ msg: "Forbidden" });
+      return;
     }
 
     req.user = user; // Save the user data to the request object
