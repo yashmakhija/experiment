@@ -141,4 +141,49 @@ doubtRouter.get("/:username", async (req: any, res: any) => {
   }
 });
 
+doubtRouter.patch("/:username/:title", async (req: any, res: any) => {
+  const { username, title } = req.params;
+  const slugTitle = slugify(title, { lower: true, strict: true });
+  console.log("Title:", slugTitle, "Username:", username);
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { username: username },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        msg: `User with username '${username}' not found.`,
+      });
+    }
+    const response = doubtSchema.safeParse(req.body);
+
+    const userDoubt = await prisma.question.updateMany({
+      where: {
+        userId: user.id,
+        title: slugTitle,
+      },
+      data: {
+        description: response.data?.description,
+      },
+    });
+
+    if (userDoubt.count === 0) {
+      return res.status(404).json({
+        msg: `No question found with the title '${title}' for user '${username}'`,
+      });
+    }
+
+    return res.status(200).json({
+      msg: "Question updated successfully",
+      updatedCount: userDoubt.count,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      msg: "Error fetching doubt for the user",
+    });
+  }
+});
+
 export default doubtRouter;

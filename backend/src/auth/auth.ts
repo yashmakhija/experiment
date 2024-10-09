@@ -13,8 +13,8 @@ const siginSchema = z.object({
 });
 
 const doubtSchema = z.object({
-  title: z.string().min(4),
-  description: z.string().min(5),
+  title: z.string().min(4, "Add atleast 4 character in title"),
+  description: z.string().min(5, "Add atleast more than 5 words description"),
 });
 
 export { siginSchema, signupSchema, doubtSchema };
