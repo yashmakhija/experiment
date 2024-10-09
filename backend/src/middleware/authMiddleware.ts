@@ -8,9 +8,10 @@ export const authenticationToken = (
   req: Request,
   res: Response,
   next: NextFunction
-): void | Promise<void> => {
+) => {
   // Explicitly set return type
   const token = req.headers["authorization"]?.split(" ")[1];
+  console.log(token);
 
   if (!token) {
     res.status(401).json({
