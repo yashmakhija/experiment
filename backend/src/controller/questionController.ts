@@ -152,3 +152,60 @@ export async function updateUserDoubt(req: Request, res: Response) {
     return;
   }
 }
+
+export async function delteDoubt(req: Request, res: Response) {
+  const { username, title } = req.params;
+  const slugTitle = slugify(title, { lower: true, strict: true });
+  console.log("Title:", slugTitle, "Username:", username);
+  const authenticatedUserId = req.user.id;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { username: username },
+    });
+
+    if (!user) {
+      res.status(404).json({
+        msg: `User with username '${username}' not found.`,
+      });
+      return;
+    }
+
+    const doubt = await prisma.question.findFirst({
+      where: {
+        userId: user.id,
+        title: slugTitle,
+      },
+    });
+
+    if (!doubt) {
+      res.status(404).json({
+        msg: `No doubt found with the title '${title}' for user '${username}'`,
+      });
+      return;
+    }
+
+    if (authenticatedUserId !== doubt.userId) {
+      res.status(403).json({
+        msg: "You are not authorized to delete this doubt.",
+      });
+      return;
+    }
+
+    await prisma.question.delete({
+      where: { id: doubt.id },
+    });
+
+    res.status(200).json({
+      msg: "Deleted Successfully",
+      doubtId: doubt.id,
+      doubtTitle: doubt.title,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      msg: "Error while deleting doubt for the user",
+    });
+    return;
+  }
+}

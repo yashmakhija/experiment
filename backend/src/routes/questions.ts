@@ -1,9 +1,14 @@
 import express from "express";
-import { doubtSchema } from "../auth/auth";
 import { authenticationToken } from "../middleware/authMiddleware";
 import { PrismaClient } from "@prisma/client";
-import slugify from "slugify";
-import { postDoubt, showDoubt, showUserDoubt, updateUserDoubt } from "../controller/questionController";
+
+import {
+  delteDoubt,
+  postDoubt,
+  showDoubt,
+  showUserDoubt,
+  updateUserDoubt,
+} from "../controller/questionController";
 
 const prisma = new PrismaClient();
 const doubtRouter = express.Router();
@@ -51,5 +56,7 @@ doubtRouter.get("/:username", async (req: any, res: any) => {
 });
 
 doubtRouter.patch("/:username/:title", authenticationToken, updateUserDoubt);
+
+doubtRouter.delete("/:username/:title", authenticationToken, delteDoubt);
 
 export default doubtRouter;
