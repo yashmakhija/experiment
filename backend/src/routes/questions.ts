@@ -13,12 +13,16 @@ import {
 const prisma = new PrismaClient();
 const doubtRouter = express.Router();
 
+//Specific user can post doubt
 doubtRouter.post("/:username", authenticationToken, postDoubt);
 
+//Show all doubt of all user
 doubtRouter.get("/", showDoubt);
 
+//show doubt by user:- username, title
 doubtRouter.get("/:username/:title", showUserDoubt);
 
+//show doubt by user
 doubtRouter.get("/:username", async (req: any, res: any) => {
   const username = req.params.username;
 
@@ -55,8 +59,10 @@ doubtRouter.get("/:username", async (req: any, res: any) => {
   }
 });
 
+//update doubt by title user (Note: Can edit only description)
 doubtRouter.patch("/:username/:title", authenticationToken, updateUserDoubt);
 
+//delte doubt by user title
 doubtRouter.delete("/:username/:title", authenticationToken, delteDoubt);
 
 export default doubtRouter;
