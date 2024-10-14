@@ -1,5 +1,4 @@
 import express from "express";
-import { PrismaClient } from "@prisma/client";
 import dotenv from "dotenv";
 import signupController, {
   signinController,
@@ -7,7 +6,6 @@ import signupController, {
 
 dotenv.config();
 const userRouter = express.Router();
-const prisma = new PrismaClient();
 
 userRouter.post("/signup", signupController);
 

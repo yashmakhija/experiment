@@ -21,6 +21,7 @@ model User{
   password String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  isAdmin Boolean @default(false)
   question Question[]
 }
 
@@ -29,6 +30,7 @@ model Question{
   title String
   description String
   isPublish Boolean @default(false)
+  isAnswer Boolean @default(false)
   userId Int
   user User @relation(fields: [userId], references: [id])
 }
