@@ -34,7 +34,8 @@ export async function postDoubt(req: Request, res: Response) {
     }
     const doubtSave = await prisma.question.create({
       data: {
-        title: slugTitle,
+        title: title,
+        permaUrl: slugTitle,
         description: description,
         userId: userId,
         isPublish: true,
@@ -42,8 +43,9 @@ export async function postDoubt(req: Request, res: Response) {
     });
 
     res.status(200).json({
-      msg: "Your doubt has been published",
+      msg: `Your doubt ${title} published`,
       doubtId: doubtSave.id,
+      Url: doubtSave.permaUrl,
     });
   } catch (err) {
     console.error(err);
@@ -64,7 +66,7 @@ export async function showDoubt(req: Request, res: Response) {
 export async function showUserDoubt(req: Request, res: Response) {
   const { username, title } = req.params;
   const slugTitle = slugify(title, { lower: true, strict: true });
-  console.log("Title:", slugTitle, "Username:", username);
+  console.log("permaUrl:", slugTitle, "Username:", username);
 
   try {
     const user = await prisma.user.findUnique({
@@ -80,7 +82,7 @@ export async function showUserDoubt(req: Request, res: Response) {
     const userDoubt = await prisma.question.findFirst({
       where: {
         userId: user.id,
-        title: slugTitle,
+        permaUrl: slugTitle,
       },
     });
 
@@ -107,7 +109,7 @@ export async function showUserDoubt(req: Request, res: Response) {
 export async function updateUserDoubt(req: Request, res: Response) {
   const { username, title } = req.params;
   const slugTitle = slugify(title, { lower: true, strict: true });
-  console.log("Title:", slugTitle, "Username:", username);
+  console.log("permaUrl:", slugTitle, "Username:", username);
   const authenticatedUserId = req.user.id;
 
   try {
@@ -132,12 +134,12 @@ export async function updateUserDoubt(req: Request, res: Response) {
     const doubt = await prisma.question.findFirst({
       where: {
         userId: user.id,
-        title: slugTitle,
+        permaUrl: slugTitle,
       },
     });
     if (!doubt) {
       res.status(404).json({
-        msg: `No doubt found with the title '${title}' for user '${username}'`,
+        msg: `No doubt found with the title $ for user '${username}'`,
       });
       return;
     }
@@ -201,7 +203,7 @@ export async function deleteDoubt(req: Request, res: Response) {
     const doubt = await prisma.question.findFirst({
       where: {
         userId: user.id,
-        title: slugTitle,
+        permaUrl: slugTitle,
       },
     });
 

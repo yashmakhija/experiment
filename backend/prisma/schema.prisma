@@ -28,6 +28,7 @@ model User{
 model Question{
   id Int @id @default(autoincrement())
   title String
+  permaUrl String?
   description String
   isPublish Boolean @default(false)
   isAnswer Boolean @default(false)
