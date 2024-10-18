@@ -23,6 +23,7 @@ model User{
   updatedAt DateTime @updatedAt
   isAdmin Boolean @default(false)
   question Question[]
+  votes     Vote[]
 }
 
 model Question{
@@ -30,8 +31,22 @@ model Question{
   title String
   permaUrl String?
   description String
-  isPublish Boolean @default(false)
+  isPublish Boolean @default(false) 
   isAnswer Boolean @default(false)
+  upVote Int? @default(0)
+  downVote Int? @default(0)
   userId Int
   user User @relation(fields: [userId], references: [id])
+  votes     Vote[]
+}
+
+model Vote {
+  id         Int       @id @default(autoincrement())
+  voteType   String    
+  questionId Int
+  userId     Int
+  question   Question  @relation(fields: [questionId], references: [id])
+  user       User      @relation(fields: [userId], references: [id])
+
+  @@unique([questionId, userId])  
 }

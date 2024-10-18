@@ -9,6 +9,7 @@ import {
   showDoubt,
   showUserDoubt,
   updateUserDoubt,
+  voteQuestion,
 } from "../controller/questionController";
 
 const prisma = new PrismaClient();
@@ -31,5 +32,7 @@ doubtRouter.patch("/:username/:title", authenticationToken, updateUserDoubt);
 
 //delte doubt by user title
 doubtRouter.delete("/:username/:title", authenticationToken, deleteDoubt);
+
+doubtRouter.patch("/:id", authenticationToken, voteQuestion);
 
 export default doubtRouter;

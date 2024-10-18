@@ -39,6 +39,8 @@ export async function postDoubt(req: Request, res: Response) {
         description: description,
         userId: userId,
         isPublish: true,
+        upVote: 0,
+        downVote: 0,
       },
     });
 
@@ -273,5 +275,102 @@ export async function showAllUserDoubt(req: Request, res: Response) {
       msg: "Error fetching doubt for the user",
     });
     return;
+  }
+}
+
+export async function voteQuestion(req: Request, res: Response) {
+  const { id } = req.params; // question ID
+  const { voteType } = req.body; // "up" or "down"
+  const userId = req.user.id; // Assuming the user is authenticated
+
+  try {
+    const findDoubt = await prisma.question.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!findDoubt) {
+      res.status(404).json({ msg: "Question not found" });
+      return;
+    }
+
+    // Use the nullish coalescing operator (??) to ensure the values are not null
+    const currentUpVote = findDoubt.upVote ?? 0;
+    const currentDownVote = findDoubt.downVote ?? 0;
+
+    // Check if the user has already voted on this question
+    const existingVote = await prisma.vote.findUnique({
+      where: {
+        questionId_userId: { questionId: Number(id), userId: userId },
+      },
+    });
+
+    if (!existingVote) {
+      // If no previous vote exists, create a new vote
+      await prisma.vote.create({
+        data: {
+          voteType: voteType,
+          questionId: Number(id),
+          userId: userId,
+        },
+      });
+
+      if (voteType === "up") {
+        await prisma.question.update({
+          where: { id: Number(id) },
+          data: { upVote: currentUpVote + 1 },
+        });
+      } else if (voteType === "down") {
+        await prisma.question.update({
+          where: { id: Number(id) },
+          data: { downVote: currentDownVote + 1 },
+        });
+      }
+
+      res.status(200).json({ msg: "Vote registered successfully" });
+    } else {
+      // If a vote already exists, check if it's the same or different voteType
+      if (existingVote.voteType === voteType) {
+        res
+          .status(400)
+          .json({ msg: "You have already voted in this direction" });
+        return;
+      }
+
+      // If the vote is different (e.g., up to down), update the vote and toggle the counters
+      if (voteType === "up") {
+        await prisma.question.update({
+          where: { id: Number(id) },
+          data: {
+            upVote: currentUpVote + 1,
+            downVote: currentDownVote - 1,
+          },
+        });
+      } else if (voteType === "down") {
+        await prisma.question.update({
+          where: { id: Number(id) },
+          data: {
+            upVote: currentUpVote - 1,
+            downVote: currentDownVote + 1,
+          },
+        });
+      }
+
+      // Update the voteType in the Vote table
+      await prisma.vote.update({
+        where: {
+          questionId_userId: { questionId: Number(id), userId: userId },
+        },
+        data: {
+          voteType: voteType,
+        },
+      });
+
+      res.status(200).json({ msg: "Vote updated successfully" });
+    }
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ msg: "An error occurred while processing the vote" });
   }
 }
